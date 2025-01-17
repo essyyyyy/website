@@ -6,6 +6,7 @@
   <title>Key System</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    /* General Reset */
     * {
       margin: 0;
       padding: 0;
@@ -14,30 +15,30 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      color: black;
+      color: black; /* Black text */
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
       padding: 20px;
+      transition: background 0.5s ease-in-out;
       position: relative;
       overflow: hidden;
-      background-color: #000;
     }
 
     h1 {
       font-size: 2.5rem;
       font-weight: 600;
       margin-bottom: 10px;
-      color: black; /* Change text color to black */
+      color: #333; /* Dark grey color for title */
       z-index: 1;
     }
 
     p {
       font-size: 1rem;
       margin-bottom: 20px;
-      color: #ddd;
+      color: #555; /* Slightly lighter text for description */
       z-index: 1;
     }
 
@@ -45,8 +46,8 @@
       padding: 12px 24px;
       font-size: 1rem;
       font-weight: 600;
-      color: white;
-      background: #4b5563;
+      color: white; /* White text on button */
+      background: #4b5563; /* Dark grey button */
       border: none;
       border-radius: 8px;
       cursor: pointer;
@@ -56,11 +57,12 @@
     }
 
     button:hover {
-      background: #6b7280;
+      background: #6b7280; /* Darker grey when hovered */
       transform: translateY(-2px);
       box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
     }
 
+    /* Shake Animation */
     @keyframes shake {
       0% { transform: rotate(0deg); }
       25% { transform: rotate(10deg); }
@@ -75,14 +77,14 @@
 
     .crossed {
       text-decoration: line-through;
-      color: red;
+      color: red; /* Red color for crossed out */
     }
 
     .key-box {
       margin-top: 20px;
       padding: 20px;
-      background: #f9fafb;
-      border: 1px solid #d1d5db;
+      background: #f9fafb; /* Light grey box */
+      border: 1px solid #d1d5db; /* Light border */
       border-radius: 10px;
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
       animation: fadeIn 0.5s ease-in-out;
@@ -90,109 +92,60 @@
     }
 
     .key-box strong {
-      color: #111;
+      color: #111; /* Dark text for key */
       font-weight: 600;
     }
 
     @keyframes fadeIn {
       from {
         opacity: 0;
+        transform: scale(0.9);
       }
       to {
         opacity: 1;
+        transform: scale(1);
       }
     }
 
     footer {
-      margin-top: 40px;
+      margin-top: 10px; /* Reduced the margin to bring it closer */
       font-size: 0.9rem;
-      color: #6b7280;
+      color: #6b7280; /* Grey footer text */
       z-index: 1;
     }
 
     footer a {
-      color: #1d4ed8;
+      color: #1d4ed8; /* Blue link */
       text-decoration: none;
       font-weight: 600;
       transition: color 0.3s ease;
     }
 
     footer a:hover {
-      color: #3b82f6;
+      color: #3b82f6; /* Lighter blue on hover */
     }
 
-    /* Background Video */
-    #backgroundVideo {
+    /* Full screen background styling */
+    .background-video,
+    .background-image {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      z-index: -1;
+      z-index: -1; /* Make background go behind all content */
     }
 
-    /* Popup Styling */
-    .popup {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      justify-content: center;
-      align-items: center;
-      opacity: 0;
-      animation: fadeIn 0.5s ease-in-out forwards;
-      z-index: 2;
-    }
-
-    .popup-content {
-      background: #fff;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
-      max-width: 500px;
-      width: 80%;
-      text-align: center;
-    }
-
-    .popup h2 {
-      color: #333;
-      font-size: 1.5rem;
-    }
-
-    .popup p {
-      color: #555;
-      margin: 20px 0;
-    }
-
-    .close-btn {
-      background: #4b5563;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .close-btn:hover {
-      background: #6b7280;
-    }
-
-    @keyframes fadeOut {
-      from {
-        opacity: 1;
-      }
-      to {
-        opacity: 0;
-      }
-    }
-
-    .fadeOut {
-      animation: fadeOut 0.5s ease-out forwards;
+    /* Referrer Text Styling */
+    #referrerText {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 1rem;
+      color: black;
+      font-weight: 600;
+      z-index: 1;
     }
   </style>
 </head>
@@ -207,26 +160,41 @@
     Made with ❤️ by <a href="https://guns.lol/debrainers" target="_blank">debrainers</a>
   </footer>
 
-  <!-- Background Video -->
-  <video id="backgroundVideo" autoplay loop muted>
-    <source src="https://r2.guns.lol/852474aa-c20d-4ae6-a2b9-654f3962dde3.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-
-  <!-- Popup for LootLabs -->
-  <div id="popup" class="popup">
-    <div class="popup-content">
-      <h2>Do the LootLabs first to get access to the key!</h2>
-      <p>Please complete the LootLabs challenge to proceed.</p>
-      <button class="close-btn" id="closePopup">Close</button>
-    </div>
-  </div>
-
+  <!-- Referrer text will appear here -->
   <div id="referrerText"></div>
 
   <script>
+    // Optionally change background (video or image) by providing a URL here
+    const customBackground = 'https://r2.guns.lol/852474aa-c20d-4ae6-a2b9-654f3962dde3.mp4'; // Paste Imgur URL for image or video URL for background video
+
+    // Check if the URL is a video
+    function isVideoUrl(url) {
+      return url.endsWith('.mp4') || url.endsWith('.webm');
+    }
+
+    if (customBackground) {
+      if (isVideoUrl(customBackground)) {
+        // Create and append the video background
+        const videoElement = document.createElement('video');
+        videoElement.src = customBackground;
+        videoElement.classList.add('background-video');
+        videoElement.autoplay = true;
+        videoElement.loop = true;
+        videoElement.muted = true;
+        videoElement.playsInline = true;
+        document.body.appendChild(videoElement);
+      } else {
+        // Create and append the image background
+        const imageElement = document.createElement('img');
+        imageElement.src = customBackground;
+        imageElement.classList.add('background-image');
+        document.body.appendChild(imageElement);
+      }
+    }
+
     const RAW_KEY_URL = 'https://raw.githubusercontent.com/essyyyyy/keys/refs/heads/main/TaxiBossKeys';
 
+    // Check if the referrer is from 'lootdest.org'
     function isValidReferrer() {
       const referrer = document.referrer;
       return referrer && referrer.includes('lootdest.org');
@@ -256,16 +224,12 @@
     async function assignKey() {
       if (!isValidReferrer()) {
         const button = document.getElementById('getKey');
-        button.classList.add('shake');
-        button.classList.add('crossed');
+        button.classList.add('shake'); // Trigger the shake animation
+        button.classList.add('crossed'); // Cross out the button with X
         setTimeout(function() {
-          button.classList.remove('shake');
-          button.classList.remove('crossed');
-        }, 500);
-
-        // Show the popup after shake
-        const popup = document.getElementById('popup');
-        popup.style.display = 'flex';
+          button.classList.remove('shake'); // Remove the shake effect
+          button.classList.remove('crossed'); // Remove the X line-through
+        }, 500); // After animation is complete, reset it
         return;
       }
 
@@ -282,6 +246,7 @@
         return;
       }
 
+      // Randomly select a key
       key = keys[Math.floor(Math.random() * keys.length)];
       saveKey(key);
       document.getElementById('key').textContent = key;
@@ -290,20 +255,11 @@
 
     document.getElementById('getKey').addEventListener('click', assignKey);
 
-    // Close the popup with fade-out animation
-    document.getElementById('closePopup').addEventListener('click', function() {
-      const popup = document.getElementById('popup');
-      popup.classList.add('fadeOut');
-      setTimeout(() => {
-        popup.style.display = 'none';
-        popup.classList.remove('fadeOut');
-      }, 500);
-    });
-
     // Display the referrer in the top-right corner
     const referrerText = document.getElementById('referrerText');
     const referrer = document.referrer || 'Direct';
     referrerText.textContent = `Referrer: ${referrer}`;
+
   </script>
 </body>
 </html>
