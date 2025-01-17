@@ -6,7 +6,6 @@
   <title>Key System</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    /* General Reset */
     * {
       margin: 0;
       padding: 0;
@@ -22,9 +21,9 @@
       justify-content: center;
       min-height: 100vh;
       padding: 20px;
-      transition: background 0.5s ease-in-out;
       position: relative;
       overflow: hidden;
+      transition: background 0.5s ease-in-out;
     }
 
     h1 {
@@ -32,12 +31,14 @@
       font-weight: 600;
       margin-bottom: 10px;
       color: #333;
+      z-index: 1;
     }
 
     p {
       font-size: 1rem;
       margin-bottom: 20px;
       color: #555;
+      z-index: 1;
     }
 
     button {
@@ -51,6 +52,7 @@
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      z-index: 1;
     }
 
     button:hover {
@@ -59,7 +61,6 @@
       box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
     }
 
-    /* Shake Animation */
     @keyframes shake {
       0% { transform: rotate(0deg); }
       25% { transform: rotate(10deg); }
@@ -85,6 +86,12 @@
       border-radius: 10px;
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
       animation: fadeIn 0.5s ease-in-out;
+      z-index: 1;
+    }
+
+    .key-box strong {
+      color: #111;
+      font-weight: 600;
     }
 
     @keyframes fadeIn {
@@ -102,6 +109,7 @@
       margin-top: 40px;
       font-size: 0.9rem;
       color: #6b7280;
+      z-index: 1;
     }
 
     footer a {
@@ -116,45 +124,54 @@
     }
 
     /* Popup Styling */
-    #popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-      opacity: 0;
+    .popup {
       display: none;
-      animation: fadeInPopup 0.5s ease-in-out forwards;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      animation: fadeIn 0.5s ease-in-out forwards;
+      z-index: 2;
     }
 
-    #popup button {
-      background: #e74c3c;
+    .popup-content {
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+      max-width: 500px;
+      width: 80%;
+      text-align: center;
+    }
+
+    .popup h2 {
+      color: #333;
+      font-size: 1.5rem;
+    }
+
+    .popup p {
+      color: #555;
+      margin: 20px 0;
+    }
+
+    .close-btn {
+      background: #4b5563;
       color: white;
       padding: 10px 20px;
-      font-size: 1rem;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
+      transition: background 0.3s ease;
     }
 
-    #popup button:hover {
-      background: #c0392b;
+    .close-btn:hover {
+      background: #6b7280;
     }
-
-    @keyframes fadeInPopup {
-      from {
-        opacity: 0;
-        transform: scale(0.8);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
   </style>
 </head>
 <body>
@@ -168,39 +185,18 @@
     Made with ❤️ by <a href="https://guns.lol/debrainers" target="_blank">debrainers</a>
   </footer>
 
-  <!-- Popup -->
-  <div id="popup">
-    <p>Do the lootlabs first to get access to the key.</p>
-    <button onclick="closePopup()">Close</button>
+  <!-- Popup for LootLabs -->
+  <div id="popup" class="popup">
+    <div class="popup-content">
+      <h2>Do the LootLabs first to get access to the key!</h2>
+      <p>Please complete the LootLabs challenge to proceed.</p>
+      <button class="close-btn" id="closePopup">Close</button>
+    </div>
   </div>
 
+  <div id="referrerText"></div>
+
   <script>
-    // Optionally change background (video or image) by providing a URL here
-    const customBackground = 'https://r2.guns.lol/852474aa-c20d-4ae6-a2b9-654f3962dde3.mp4';
-
-    // Check if the URL is a video
-    function isVideoUrl(url) {
-      return url.endsWith('.mp4') || url.endsWith('.webm');
-    }
-
-    if (customBackground) {
-      if (isVideoUrl(customBackground)) {
-        const videoElement = document.createElement('video');
-        videoElement.src = customBackground;
-        videoElement.classList.add('background-video');
-        videoElement.autoplay = true;
-        videoElement.loop = true;
-        videoElement.muted = true;
-        videoElement.playsInline = true;
-        document.body.appendChild(videoElement);
-      } else {
-        const imageElement = document.createElement('img');
-        imageElement.src = customBackground;
-        imageElement.classList.add('background-image');
-        document.body.appendChild(imageElement);
-      }
-    }
-
     const RAW_KEY_URL = 'https://raw.githubusercontent.com/essyyyyy/keys/refs/heads/main/TaxiBossKeys';
 
     function isValidReferrer() {
@@ -238,7 +234,10 @@
           button.classList.remove('shake');
           button.classList.remove('crossed');
         }, 500);
-        showPopup();  // Show popup after shake effect
+
+        // Show the popup after shake
+        const popup = document.getElementById('popup');
+        popup.style.display = 'flex';
         return;
       }
 
@@ -261,20 +260,17 @@
       document.getElementById('result').style.display = 'block';
     }
 
-    function showPopup() {
-      const popup = document.getElementById('popup');
-      popup.style.display = 'block';
-    }
-
-    function closePopup() {
-      const popup = document.getElementById('popup');
-      popup.style.animation = 'fadeOutPopup 0.5s ease-in-out forwards';
-      setTimeout(() => {
-        popup.style.display = 'none';
-      }, 500);
-    }
-
     document.getElementById('getKey').addEventListener('click', assignKey);
+
+    // Close the popup when the close button is clicked
+    document.getElementById('closePopup').addEventListener('click', function() {
+      document.getElementById('popup').style.display = 'none';
+    });
+
+    // Display the referrer in the top-right corner
+    const referrerText = document.getElementById('referrerText');
+    const referrer = document.referrer || 'Direct';
+    referrerText.textContent = `Referrer: ${referrer}`;
   </script>
 </body>
 </html>
