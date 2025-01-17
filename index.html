@@ -62,6 +62,24 @@
       box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
     }
 
+    /* Shake Animation */
+    @keyframes shake {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(10deg); }
+      50% { transform: rotate(-10deg); }
+      75% { transform: rotate(5deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    .shake {
+      animation: shake 0.5s ease-in-out forwards;
+    }
+
+    .crossed {
+      text-decoration: line-through;
+      color: red; /* Red color for crossed out */
+    }
+
     .key-box {
       margin-top: 20px;
       padding: 20px;
@@ -135,6 +153,7 @@
   <h1>Key System TB</h1>
   <p>Click button for key!</p>
   <button id="getKey">Get My Key</button>
+  <button id="shakeButton">SHAKE</button>
   <div id="result" class="key-box" style="display: none;">
     Your Key: <strong id="key"></strong>
   </div>
@@ -176,10 +195,10 @@
 
     const RAW_KEY_URL = 'https://raw.githubusercontent.com/essyyyyy/keys/refs/heads/main/TaxiBossKeys';
 
-    // Check if the referrer is from 'lootlabs'
+    // Check if the referrer is from 'lootdest.org'
     function isValidReferrer() {
       const referrer = document.referrer;
-      return referrer && referrer.includes('lootlabs');
+      return referrer && referrer.includes('lootdest.org');
     }
 
     async function fetchKeys() {
@@ -205,7 +224,7 @@
 
     async function assignKey() {
       if (!isValidReferrer()) {
-        alert('You must come from lootlabs to get a key.');
+        alert('You must come from lootdest.org to get a key.');
         return;
       }
 
@@ -235,6 +254,18 @@
     const referrerText = document.getElementById('referrerText');
     const referrer = document.referrer || 'Direct';
     referrerText.textContent = `Referrer: ${referrer}`;
+
+    // Handle Shake Button
+    document.getElementById('shakeButton').addEventListener('click', function() {
+      const button = document.getElementById('shakeButton');
+      button.classList.add('shake'); // Trigger the shake animation
+      button.classList.add('crossed'); // Cross out the button with X
+      setTimeout(function() {
+        button.classList.remove('shake'); // Remove the shake effect
+        button.classList.remove('crossed'); // Remove the X line-through
+      }, 500); // After animation is complete, reset it
+    });
   </script>
 </body>
 </html>
+
