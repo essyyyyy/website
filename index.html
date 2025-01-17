@@ -22,9 +22,9 @@
       justify-content: center;
       min-height: 100vh;
       padding: 20px;
-      transition: background 0.5s ease-in-out;
       position: relative;
       overflow: hidden;
+      transition: background 0.5s ease-in-out;
     }
 
     h1 {
@@ -32,14 +32,12 @@
       font-weight: 600;
       margin-bottom: 10px;
       color: #333; /* Darker text for title */
-      z-index: 1;
     }
 
     p {
       font-size: 1rem;
       margin-bottom: 20px;
       color: #555; /* Slightly lighter text for description */
-      z-index: 1;
     }
 
     button {
@@ -88,7 +86,6 @@
       border-radius: 10px;
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
       animation: fadeIn 0.5s ease-in-out;
-      z-index: 1;
     }
 
     .key-box strong {
@@ -111,7 +108,6 @@
       margin-top: 40px;
       font-size: 0.9rem;
       color: #6b7280; /* Grey footer text */
-      z-index: 1;
     }
 
     footer a {
@@ -205,6 +201,27 @@
       transform: translateY(-2px);
     }
 
+    /* Button closing animation */
+    @keyframes buttonClose {
+      0% {
+        transform: scale(1);
+        background: #4b5563;
+      }
+      50% {
+        transform: scale(0.8);
+        background: #6b7280;
+      }
+      100% {
+        transform: scale(0);
+        background: #6b7280;
+        opacity: 0;
+      }
+    }
+
+    .close-btn-animation {
+      animation: buttonClose 0.5s ease-out forwards;
+    }
+
   </style>
 </head>
 <body>
@@ -259,24 +276,13 @@
     // Check if the referrer is from 'lootdest.org'
     function isValidReferrer() {
       const referrer = document.referrer;
-      return referrer && referrer.includes('lootdest.org');
+      return referrer.includes('lootdest.org');
     }
 
     async function fetchKeys() {
-      try {
-        const response = await fetch(RAW_KEY_URL);
-        if (!response.ok) throw new Error('Failed to fetch keys.');
-        const text = await response.text();
-        return text.split('\n').map(k => k.trim()).filter(k => k);
-      } catch (error) {
-        console.error(error);
-        alert('Error fetching keys. Please try again later.');
-        return [];
-      }
-    }
-
-    function getSavedKey() {
-      return localStorage.getItem('userKey');
+      const response = await fetch(RAW_KEY_URL);
+      const data = await response.json();
+      return data.keys || [];
     }
 
     function saveKey(key) {
@@ -284,14 +290,9 @@
     }
 
     async function assignKey() {
-      if (!isValidReferrer()) {
-        // Show the popup if referrer is invalid
-        document.getElementById('popup').style.display = 'block';
-        return;
-      }
+      let key = localStorage.getItem('userKey');
 
-      let key = getSavedKey();
-      if (!key) {
+      if (!key && isValidReferrer()) {
         const keys = await fetchKeys();
         if (keys.length > 0) {
           key = keys[Math.floor(Math.random() * keys.length)];
@@ -304,6 +305,16 @@
       if (key) {
         document.getElementById('key').textContent = key;
         document.getElementById('result').style.display = 'block';
+      } else {
+        // Trigger shake animation on the button
+        const button = document.getElementById('getKey');
+        button.classList.add('shake');
+
+        // Show the popup
+        document.getElementById('popup').style.display = 'block';
+        setTimeout(() => {
+          button.classList.remove('shake');
+        }, 500);
       }
     }
 
