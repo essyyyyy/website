@@ -137,16 +137,59 @@
       z-index: -1; /* Make background go behind all content */
     }
 
-    /* Referrer Text Styling */
-    #referrerText {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      font-size: 1rem;
-      color: black;
-      font-weight: 600;
-      z-index: 1;
+    /* Popup Styling */
+    #popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+      display: none;
+      width: 300px;
+      text-align: center;
     }
+
+    #popup h2 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    #popup p {
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+
+    #popup a {
+      color: #1d4ed8; /* Blue link for "THIS" */
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    #popup a:hover {
+      color: #3b82f6; /* Lighter blue on hover */
+    }
+
+    #popup .close-btn {
+      background: #4b5563; /* Dark grey button */
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+      margin-top: 20px;
+    }
+
+    #popup .close-btn:hover {
+      background: #6b7280; /* Darker grey when hovered */
+      transform: translateY(-2px);
+    }
+
   </style>
 </head>
 <body>
@@ -160,8 +203,12 @@
     Made with ❤️ by <a href="https://guns.lol/debrainers" target="_blank">debrainers</a>
   </footer>
 
-  <!-- Referrer text will appear here -->
-  <div id="referrerText"></div>
+  <!-- Popup for Invalid Referrer -->
+  <div id="popup">
+    <h2>Invalid Referrer!</h2>
+    <p>You need to come from <a href="https://lootdest.org/s?gAcBEAjK" target="_blank">THIS</a> link.</p>
+    <button class="close-btn" id="closePopup">Close</button>
+  </div>
 
   <script>
     // Optionally change background (video or image) by providing a URL here
@@ -223,13 +270,8 @@
 
     async function assignKey() {
       if (!isValidReferrer()) {
-        const button = document.getElementById('getKey');
-        button.classList.add('shake'); // Trigger the shake animation
-        button.classList.add('crossed'); // Cross out the button with X
-        setTimeout(function() {
-          button.classList.remove('shake'); // Remove the shake effect
-          button.classList.remove('crossed'); // Remove the X line-through
-        }, 500); // After animation is complete, reset it
+        // Show the popup if referrer is invalid
+        document.getElementById('popup').style.display = 'block';
         return;
       }
 
@@ -255,13 +297,11 @@
 
     document.getElementById('getKey').addEventListener('click', assignKey);
 
-    // Display the referrer in the top-right corner
-    const referrerText = document.getElementById('referrerText');
-    const referrer = document.referrer || 'Direct';
-    referrerText.textContent = `Referrer: ${referrer}`;
+    // Close the popup when the close button is clicked
+    document.getElementById('closePopup').addEventListener('click', function() {
+      document.getElementById('popup').style.display = 'none';
+    });
 
   </script>
 </body>
 </html>
-
-
