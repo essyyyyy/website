@@ -15,7 +15,6 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: white; /* White background */
       color: black; /* Black text */
       display: flex;
       flex-direction: column;
@@ -24,6 +23,8 @@
       min-height: 100vh;
       padding: 20px;
       transition: background 0.5s ease-in-out;
+      position: relative;
+      overflow: hidden;
     }
 
     h1 {
@@ -31,12 +32,14 @@
       font-weight: 600;
       margin-bottom: 10px;
       color: #333; /* Darker text for title */
+      z-index: 1;
     }
 
     p {
       font-size: 1rem;
       margin-bottom: 20px;
       color: #555; /* Slightly lighter text for description */
+      z-index: 1;
     }
 
     button {
@@ -50,6 +53,7 @@
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      z-index: 1;
     }
 
     button:hover {
@@ -66,6 +70,7 @@
       border-radius: 10px;
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
       animation: fadeIn 0.5s ease-in-out;
+      z-index: 1;
     }
 
     .key-box strong {
@@ -88,6 +93,7 @@
       margin-top: 40px;
       font-size: 0.9rem;
       color: #6b7280; /* Grey footer text */
+      z-index: 1;
     }
 
     footer a {
@@ -99,6 +105,18 @@
 
     footer a:hover {
       color: #3b82f6; /* Lighter blue on hover */
+    }
+
+    /* Full screen background styling */
+    .background-video,
+    .background-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1; /* Make background go behind all content */
     }
   </style>
 </head>
@@ -114,12 +132,32 @@
   </footer>
 
   <script>
-    // Optionally change background image by providing an Imgur link here
-    const customBackgroundImage = 'https://r2.guns.lol/852474aa-c20d-4ae6-a2b9-654f3962dde3.mp4'; // Paste Imgur URL here if you want to set a custom background image
+    // Optionally change background (video or image) by providing a URL here
+    const customBackground = 'https://r2.guns.lol/852474aa-c20d-4ae6-a2b9-654f3962dde3.mp4'; // Paste Imgur URL for image or video URL for background video
 
-    if (customBackgroundImage) {
-      document.body.style.background = `url(${customBackgroundImage}) no-repeat center center fixed`;
-      document.body.style.backgroundSize = 'cover';
+    // Check if the URL is a video
+    function isVideoUrl(url) {
+      return url.endsWith('.mp4') || url.endsWith('.webm');
+    }
+
+    if (customBackground) {
+      if (isVideoUrl(customBackground)) {
+        // Create and append the video background
+        const videoElement = document.createElement('video');
+        videoElement.src = customBackground;
+        videoElement.classList.add('background-video');
+        videoElement.autoplay = true;
+        videoElement.loop = true;
+        videoElement.muted = true;
+        videoElement.playsInline = true;
+        document.body.appendChild(videoElement);
+      } else {
+        // Create and append the image background
+        const imageElement = document.createElement('img');
+        imageElement.src = customBackground;
+        imageElement.classList.add('background-image');
+        document.body.appendChild(imageElement);
+      }
     }
 
     const RAW_KEY_URL = 'https://raw.githubusercontent.com/essyyyyy/keys/refs/heads/main/TaxiBossKeys';
