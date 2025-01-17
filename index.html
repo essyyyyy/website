@@ -15,7 +15,7 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      color: black;
+      color: black; /* Black text */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -31,30 +31,33 @@
       font-size: 2.5rem;
       font-weight: 600;
       margin-bottom: 10px;
-      color: #333;
+      color: #333; /* Darker text for title */
+      z-index: 1;
     }
 
     p {
       font-size: 1rem;
       margin-bottom: 20px;
-      color: #555;
+      color: #555; /* Slightly lighter text for description */
+      z-index: 1;
     }
 
     button {
       padding: 12px 24px;
       font-size: 1rem;
       font-weight: 600;
-      color: white;
-      background: #4b5563;
+      color: white; /* White text on button */
+      background: #4b5563; /* Dark grey button */
       border: none;
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      z-index: 1;
     }
 
     button:hover {
-      background: #6b7280;
+      background: #6b7280; /* Darker grey when hovered */
       transform: translateY(-2px);
       box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
     }
@@ -62,45 +65,49 @@
     .key-box {
       margin-top: 20px;
       padding: 20px;
-      background: #f9fafb;
-      border: 1px solid #d1d5db;
+      background: #f9fafb; /* Light grey box */
+      border: 1px solid #d1d5db; /* Light border */
       border-radius: 10px;
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.5s ease-in-out;
+      z-index: 1;
     }
 
     .key-box strong {
-      color: #111;
+      color: #111; /* Dark text for key */
       font-weight: 600;
     }
 
-    .volume-control {
-      margin-top: 20px;
-      width: 200px;
-      text-align: center;
-    }
-
-    .volume-control input {
-      width: 100%;
-      cursor: pointer;
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     footer {
       margin-top: 40px;
       font-size: 0.9rem;
-      color: #6b7280;
+      color: #6b7280; /* Grey footer text */
+      z-index: 1;
     }
 
     footer a {
-      color: #1d4ed8;
+      color: #1d4ed8; /* Blue link */
       text-decoration: none;
       font-weight: 600;
       transition: color 0.3s ease;
     }
 
     footer a:hover {
-      color: #3b82f6;
+      color: #3b82f6; /* Lighter blue on hover */
     }
 
+    /* Full screen background styling */
     .background-video,
     .background-image {
       position: absolute;
@@ -109,43 +116,33 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      z-index: -1;
+      z-index: -1; /* Make background go behind all content */
     }
   </style>
 </head>
 <body>
   <h1>Key System TB</h1>
-  <p>Click button for key!</p>
+  <p>Click button 4 key!</p>
   <button id="getKey">Get My Key</button>
   <div id="result" class="key-box" style="display: none;">
     Your Key: <strong id="key"></strong>
   </div>
-
-  <div class="volume-control">
-    <label for="volumeSlider">Volume Control:</label>
-    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
-  </div>
-
   <footer>
     Made with ❤️ by <a href="https://guns.lol/debrainers" target="_blank">debrainers</a>
   </footer>
 
-  <!-- Audio player element -->
-  <audio id="backgroundAudio" autoplay loop>
-    <source src="your-audio-file.mp3" type="audio/mp3">
-    Your browser does not support the audio element.
-  </audio>
-
   <script>
     // Optionally change background (video or image) by providing a URL here
-    const customBackground = 'https://r2.guns.lol/852474aa-c20d-4ae6-a2b9-654f3962dde3.mp4';
+    const customBackground = 'https://r2.guns.lol/852474aa-c20d-4ae6-a2b9-654f3962dde3.mp4'; // Paste Imgur URL for image or video URL for background video
 
+    // Check if the URL is a video
     function isVideoUrl(url) {
       return url.endsWith('.mp4') || url.endsWith('.webm');
     }
 
     if (customBackground) {
       if (isVideoUrl(customBackground)) {
+        // Create and append the video background
         const videoElement = document.createElement('video');
         videoElement.src = customBackground;
         videoElement.classList.add('background-video');
@@ -155,6 +152,7 @@
         videoElement.playsInline = true;
         document.body.appendChild(videoElement);
       } else {
+        // Create and append the image background
         const imageElement = document.createElement('img');
         imageElement.src = customBackground;
         imageElement.classList.add('background-image');
@@ -199,6 +197,7 @@
         return;
       }
 
+      // Randomly select a key
       key = keys[Math.floor(Math.random() * keys.length)];
       saveKey(key);
       document.getElementById('key').textContent = key;
@@ -206,14 +205,6 @@
     }
 
     document.getElementById('getKey').addEventListener('click', assignKey);
-
-    // Audio volume control
-    const volumeSlider = document.getElementById('volumeSlider');
-    const backgroundAudio = document.getElementById('backgroundAudio');
-    volumeSlider.addEventListener('input', function() {
-      backgroundAudio.volume = volumeSlider.value;
-    });
   </script>
 </body>
 </html>
-
