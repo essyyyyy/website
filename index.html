@@ -30,7 +30,7 @@
       font-size: 2.5rem;
       font-weight: 600;
       margin-bottom: 10px;
-      color: #333;
+      color: #333; /* Dark grey instead of black */
       z-index: 1;
       transition: transform 0.5s ease-in-out;
     }
@@ -88,8 +88,6 @@
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
       animation: fadeIn 0.5s ease-in-out;
       z-index: 1;
-      transform: translateY(50px);
-      opacity: 0;
     }
 
     .key-box strong {
@@ -100,22 +98,18 @@
     @keyframes fadeIn {
       from {
         opacity: 0;
-        transform: translateY(50px);
       }
       to {
         opacity: 1;
-        transform: translateY(0);
       }
     }
 
     footer {
-      margin-top: 20px;
+      margin-top: 20px; /* Squeeze it a bit closer to the content */
       font-size: 0.9rem;
       color: #6b7280;
       z-index: 1;
       transition: transform 0.5s ease-in-out;
-      transform: translateY(50px);
-      opacity: 0;
     }
 
     footer a {
@@ -129,6 +123,7 @@
       color: #3b82f6;
     }
 
+    /* Background Video */
     #backgroundVideo {
       position: absolute;
       top: 0;
@@ -139,6 +134,7 @@
       z-index: -1;
     }
 
+    /* Popup Styling */
     .popup {
       display: none;
       position: fixed;
@@ -162,19 +158,6 @@
       max-width: 500px;
       width: 80%;
       text-align: center;
-      transform: translateY(-30px);
-      animation: slideUp 0.5s ease-out forwards;
-    }
-
-    @keyframes slideUp {
-      from {
-        transform: translateY(30px);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
     }
 
     .popup h2 {
@@ -182,8 +165,13 @@
       font-size: 1.5rem;
     }
 
+    .popup p {
+      color: #555;
+      margin: 20px 0;
+    }
+
     .popup a {
-      color: #1d4ed8;
+      color: #1d4ed8; /* Blue link color */
       text-decoration: none;
       font-weight: 600;
       transition: color 0.3s ease;
@@ -201,17 +189,23 @@
       border-radius: 6px;
       cursor: pointer;
       transition: background 0.3s ease;
-      margin-top: 20px;
     }
 
     .close-btn:hover {
       background: #6b7280;
     }
 
-    .close-btn-container {
-      display: flex;
-      justify-content: center;
-      width: 100%;
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+
+    .fadeOut {
+      animation: fadeOut 0.5s ease-out forwards;
     }
   </style>
 </head>
@@ -235,11 +229,10 @@
   <!-- Popup for LootLabs -->
   <div id="popup" class="popup">
     <div class="popup-content">
-      <h2>Click THIS to get to LootLabs</h2>
+      <h2>Do the LootLabs first to get access to the key!</h2>
+      <p>Please complete the LootLabs challenge to proceed.</p>
       <a href="https://lootdest.org/s?gAcBEAjK" target="_blank">Click THIS to get to LootLabs</a>
-      <div class="close-btn-container">
-        <button class="close-btn" id="closePopup">Close</button>
-      </div>
+      <button class="close-btn" id="closePopup">Close</button>
     </div>
   </div>
 
@@ -308,12 +301,9 @@
       document.getElementById('key').textContent = key;
       document.getElementById('result').style.display = 'block';
 
-      // Slide in the title, key, and footer
+      // Move the title and footer up/down after getting the key
       document.getElementById('title').style.transform = 'translateY(-50px)';
       document.getElementById('footer').style.transform = 'translateY(50px)';
-      document.getElementById('footer').style.opacity = 1;
-      document.getElementById('result').style.transform = 'translateY(50px)';
-      document.getElementById('result').style.opacity = 1;
     }
 
     document.getElementById('getKey').addEventListener('click', assignKey);
@@ -321,14 +311,17 @@
     // Close the popup with fade-out animation
     document.getElementById('closePopup').addEventListener('click', function() {
       const popup = document.getElementById('popup');
-      popup.style.opacity = 0;
+      popup.classList.add('fadeOut');
       setTimeout(() => {
         popup.style.display = 'none';
+        popup.classList.remove('fadeOut');
       }, 500);
     });
 
-    // Display the referrer check text
-    document.getElementById('referrerText').textContent = isValidReferrer() ? "Valid referrer detected!" : "No valid referrer detected.";
+    // Display the referrer in the top-right corner
+    const referrerText = document.getElementById('referrerText');
+    const referrer = document.referrer || 'Direct';
+    referrerText.textContent = `Referrer: ${referrer}`;
   </script>
 </body>
 </html>
