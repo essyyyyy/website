@@ -118,6 +118,17 @@
       object-fit: cover;
       z-index: -1; /* Make background go behind all content */
     }
+
+    /* Referrer Text Styling */
+    #referrerText {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 1rem;
+      color: black;
+      font-weight: 600;
+      z-index: 1;
+    }
   </style>
 </head>
 <body>
@@ -130,6 +141,9 @@
   <footer>
     Made with ❤️ by <a href="https://guns.lol/debrainers" target="_blank">debrainers</a>
   </footer>
+
+  <!-- Referrer text will appear here -->
+  <div id="referrerText"></div>
 
   <script>
     // Optionally change background (video or image) by providing a URL here
@@ -216,6 +230,11 @@
     }
 
     document.getElementById('getKey').addEventListener('click', assignKey);
+
+    // Display the referrer in the top-right corner
+    const referrerText = document.getElementById('referrerText');
+    const referrer = document.referrer || 'Direct';
+    referrerText.textContent = `Referrer: ${referrer}`;
   </script>
 </body>
 </html>
