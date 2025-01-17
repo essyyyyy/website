@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -15,7 +15,7 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #1e293b, #0f172a);
+      background: #1a1a1a; /* Default dark grey */
       color: #f1f5f9;
       display: flex;
       flex-direction: column;
@@ -23,6 +23,7 @@
       justify-content: center;
       min-height: 100vh;
       padding: 20px;
+      transition: background 0.5s ease-in-out;
     }
 
     h1 {
@@ -43,7 +44,7 @@
       font-size: 1rem;
       font-weight: 600;
       color: #1e293b;
-      background: #93c5fd;
+      background: #4b5563; /* Grey background */
       border: none;
       border-radius: 8px;
       cursor: pointer;
@@ -52,7 +53,7 @@
     }
 
     button:hover {
-      background: #60a5fa;
+      background: #6b7280; /* Darker grey */
       transform: translateY(-2px);
       box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
     }
@@ -111,7 +112,16 @@
   <footer>
     Made with ❤️ by <a href="https://github.com/essyyyyy" target="_blank">essyyyyy</a>
   </footer>
+
   <script>
+    // Optionally change background image by providing an Imgur link here
+    const customBackgroundImage = ''; // Paste Imgur URL here if you want to set a custom background image
+
+    if (customBackgroundImage) {
+      document.body.style.background = `url(${customBackgroundImage}) no-repeat center center fixed`;
+      document.body.style.backgroundSize = 'cover';
+    }
+
     const RAW_KEY_URL = 'https://raw.githubusercontent.com/essyyyyy/keys/refs/heads/main/TaxiBossKeys';
 
     async function fetchKeys() {
