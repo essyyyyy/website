@@ -107,66 +107,45 @@
       }
     }
 
-    /* Popup Styles */
-    #popup {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0);
-      background: white;
-      border: 1px solid #d1d5db;
-      border-radius: 10px;
-      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
-      width: 90%;
-      max-width: 400px;
-      padding: 20px;
-      text-align: center;
-      animation: popupOpen 0.3s forwards;
-      z-index: 999;
+    footer {
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #6b7280; /* Grey footer text */
+      z-index: 1;
     }
 
-    @keyframes popupOpen {
-      from {
-        transform: translate(-50%, -50%) scale(0.8);
-        opacity: 0;
-      }
-      to {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 1;
-      }
-    }
-
-    @keyframes popupClose {
-      from {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 1;
-      }
-      to {
-        transform: translate(-50%, -50%) scale(0.8);
-        opacity: 0;
-      }
-    }
-
-    #popup .close {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      color: #333;
-    }
-
-    #popup a {
-      color: #1d4ed8;
+    footer a {
+      color: #1d4ed8; /* Blue link */
       text-decoration: none;
       font-weight: 600;
-      font-size: 1rem;
+      transition: color 0.3s ease;
     }
 
-    #popup a:hover {
-      text-decoration: underline;
+    footer a:hover {
+      color: #3b82f6; /* Lighter blue on hover */
+    }
+
+    /* Full screen background styling */
+    .background-video,
+    .background-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1; /* Make background go behind all content */
+    }
+
+    /* Referrer Text Styling */
+    #referrerText {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 1rem;
+      color: black;
+      font-weight: 600;
+      z-index: 1;
     }
   </style>
 </head>
@@ -181,15 +160,41 @@
     Made with ❤️ by <a href="https://guns.lol/debrainers" target="_blank">debrainers</a>
   </footer>
 
-  <!-- Popup -->
-  <div id="popup">
-    <span class="close" onclick="closePopup()">×</span>
-    <p>Key system wasn't done properly. Click <a href="https://lootlabs.com" target="_blank">THIS</a> to visit the loot labs!</p>
-  </div>
+  <!-- Referrer text will appear here -->
+  <div id="referrerText"></div>
 
   <script>
+    // Optionally change background (video or image) by providing a URL here
+    const customBackground = 'https://r2.guns.lol/852474aa-c20d-4ae6-a2b9-654f3962dde3.mp4'; // Paste Imgur URL for image or video URL for background video
+
+    // Check if the URL is a video
+    function isVideoUrl(url) {
+      return url.endsWith('.mp4') || url.endsWith('.webm');
+    }
+
+    if (customBackground) {
+      if (isVideoUrl(customBackground)) {
+        // Create and append the video background
+        const videoElement = document.createElement('video');
+        videoElement.src = customBackground;
+        videoElement.classList.add('background-video');
+        videoElement.autoplay = true;
+        videoElement.loop = true;
+        videoElement.muted = true;
+        videoElement.playsInline = true;
+        document.body.appendChild(videoElement);
+      } else {
+        // Create and append the image background
+        const imageElement = document.createElement('img');
+        imageElement.src = customBackground;
+        imageElement.classList.add('background-image');
+        document.body.appendChild(imageElement);
+      }
+    }
+
     const RAW_KEY_URL = 'https://raw.githubusercontent.com/essyyyyy/keys/refs/heads/main/TaxiBossKeys';
 
+    // Check if the referrer is from 'lootdest.org'
     function isValidReferrer() {
       const referrer = document.referrer;
       return referrer && referrer.includes('lootdest.org');
@@ -208,33 +213,30 @@
       }
     }
 
+    function getSavedKey() {
+      return localStorage.getItem('userKey');
+    }
+
     function saveKey(key) {
       localStorage.setItem('userKey', key);
     }
 
-    function closePopup() {
-      const popup = document.getElementById('popup');
-      popup.style.animation = 'popupClose 0.3s forwards';
-      setTimeout(() => popup.style.display = 'none', 300);
-    }
-
-    function showPopup() {
-      const popup = document.getElementById('popup');
-      popup.style.display = 'block';
-      popup.style.animation = 'popupOpen 0.3s forwards';
-    }
-
     async function assignKey() {
-      const button = document.getElementById('getKey');
-
       if (!isValidReferrer()) {
-        button.classList.add('shake');
-        button.classList.add('crossed');
-        setTimeout(() => {
-          button.classList.remove('shake');
-          button.classList.remove('crossed');
-          showPopup(); // Show the popup after animation
-        }, 500);
+        const button = document.getElementById('getKey');
+        button.classList.add('shake'); // Trigger the shake animation
+        button.classList.add('crossed'); // Cross out the button with X
+        setTimeout(function() {
+          button.classList.remove('shake'); // Remove the shake effect
+          button.classList.remove('crossed'); // Remove the X line-through
+        }, 500); // After animation is complete, reset it
+        return;
+      }
+
+      let key = getSavedKey();
+      if (key) {
+        document.getElementById('key').textContent = key;
+        document.getElementById('result').style.display = 'block';
         return;
       }
 
@@ -244,13 +246,20 @@
         return;
       }
 
-      const key = keys[Math.floor(Math.random() * keys.length)];
+      // Randomly select a key
+      key = keys[Math.floor(Math.random() * keys.length)];
       saveKey(key);
       document.getElementById('key').textContent = key;
       document.getElementById('result').style.display = 'block';
     }
 
     document.getElementById('getKey').addEventListener('click', assignKey);
+
+    // Display the referrer in the top-right corner
+    const referrerText = document.getElementById('referrerText');
+    const referrer = document.referrer || 'Direct';
+    referrerText.textContent = Referrer: ${referrer};
+
   </script>
 </body>
 </html>
