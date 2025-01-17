@@ -122,7 +122,7 @@
 </head>
 <body>
   <h1>Key System TB</h1>
-  <p>Click button 4 key!</p>
+  <p>Click button for key!</p>
   <button id="getKey">Get My Key</button>
   <div id="result" class="key-box" style="display: none;">
     Your Key: <strong id="key"></strong>
@@ -162,6 +162,12 @@
 
     const RAW_KEY_URL = 'https://raw.githubusercontent.com/essyyyyy/keys/refs/heads/main/TaxiBossKeys';
 
+    // Check if the referrer is from 'lootlabs'
+    function isValidReferrer() {
+      const referrer = document.referrer;
+      return referrer && referrer.includes('lootlabs');
+    }
+
     async function fetchKeys() {
       try {
         const response = await fetch(RAW_KEY_URL);
@@ -184,6 +190,11 @@
     }
 
     async function assignKey() {
+      if (!isValidReferrer()) {
+        alert('You must come from lootlabs to get a key.');
+        return;
+      }
+
       let key = getSavedKey();
       if (key) {
         document.getElementById('key').textContent = key;
@@ -199,13 +210,6 @@
 
       // Randomly select a key
       key = keys[Math.floor(Math.random() * keys.length)];
-
-      // Check if the referrer is from lootlabs and append that info to the key request
-      const referrer = document.referrer;
-      if (referrer.includes("lootlabs")) {
-        key = `lootlabs-${key}`; // Prefix the key if from lootlabs
-      }
-
       saveKey(key);
       document.getElementById('key').textContent = key;
       document.getElementById('result').style.display = 'block';
