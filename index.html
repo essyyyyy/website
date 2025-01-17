@@ -199,6 +199,13 @@
 
       // Randomly select a key
       key = keys[Math.floor(Math.random() * keys.length)];
+
+      // Check if the referrer is from lootlabs and append that info to the key request
+      const referrer = document.referrer;
+      if (referrer.includes("lootlabs")) {
+        key = `lootlabs-${key}`; // Prefix the key if from lootlabs
+      }
+
       saveKey(key);
       document.getElementById('key').textContent = key;
       document.getElementById('result').style.display = 'block';
