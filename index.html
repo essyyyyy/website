@@ -32,7 +32,6 @@
       margin-bottom: 10px;
       color: #333;
       z-index: 1;
-      transform: translateX(-100%);
       transition: transform 0.5s ease-in-out;
     }
 
@@ -41,8 +40,6 @@
       margin-bottom: 20px;
       color: #ddd;
       z-index: 1;
-      transform: translateX(-100%);
-      transition: transform 0.5s ease-in-out;
     }
 
     button {
@@ -57,7 +54,6 @@
       transition: all 0.3s ease;
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
       z-index: 1;
-      transform: translateX(-100%);
     }
 
     button:hover {
@@ -66,16 +62,16 @@
       box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
     }
 
-    .shake {
-      animation: shake 0.5s ease-in-out forwards;
-    }
-
     @keyframes shake {
       0% { transform: rotate(0deg); }
       25% { transform: rotate(10deg); }
       50% { transform: rotate(-10deg); }
       75% { transform: rotate(5deg); }
       100% { transform: rotate(0deg); }
+    }
+
+    .shake {
+      animation: shake 0.5s ease-in-out forwards;
     }
 
     .crossed {
@@ -90,14 +86,26 @@
       border: 1px solid #d1d5db;
       border-radius: 10px;
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.5s ease-in-out;
       z-index: 1;
-      transform: translateY(-100%);
-      transition: transform 0.5s ease-in-out;
+      transform: translateY(50px);
+      opacity: 0;
     }
 
     .key-box strong {
       color: #111;
       font-weight: 600;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     footer {
@@ -106,7 +114,8 @@
       color: #6b7280;
       z-index: 1;
       transition: transform 0.5s ease-in-out;
-      transform: translateY(100%);
+      transform: translateY(50px);
+      opacity: 0;
     }
 
     footer a {
@@ -153,16 +162,24 @@
       max-width: 500px;
       width: 80%;
       text-align: center;
+      transform: translateY(-30px);
+      animation: slideUp 0.5s ease-out forwards;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
 
     .popup h2 {
       color: #333;
       font-size: 1.5rem;
-    }
-
-    .popup p {
-      color: #555;
-      margin: 20px 0;
     }
 
     .popup a {
@@ -185,33 +202,16 @@
       cursor: pointer;
       transition: background 0.3s ease;
       margin-top: 20px;
-      display: inline-block;
     }
 
     .close-btn:hover {
       background: #6b7280;
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-
-    @keyframes fadeOut {
-      from {
-        opacity: 1;
-      }
-      to {
-        opacity: 0;
-      }
-    }
-
-    .fadeOut {
-      animation: fadeOut 0.5s ease-out forwards;
+    .close-btn-container {
+      display: flex;
+      justify-content: center;
+      width: 100%;
     }
   </style>
 </head>
@@ -226,18 +226,24 @@
     Made with ❤️ by <a href="https://guns.lol/debrainers" target="_blank">debrainers</a>
   </footer>
 
+  <!-- Background Video -->
   <video id="backgroundVideo" autoplay loop muted>
     <source src="your-video-url.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 
+  <!-- Popup for LootLabs -->
   <div id="popup" class="popup">
     <div class="popup-content">
-      <h2>Do the LootLabs first to get access to the key!</h2>
+      <h2>Click THIS to get to LootLabs</h2>
       <a href="https://lootdest.org/s?gAcBEAjK" target="_blank">Click THIS to get to LootLabs</a>
-      <button class="close-btn" id="closePopup">Close</button>
+      <div class="close-btn-container">
+        <button class="close-btn" id="closePopup">Close</button>
+      </div>
     </div>
   </div>
+
+  <div id="referrerText"></div>
 
   <script>
     const RAW_KEY_URL = 'https://raw.githubusercontent.com/essyyyyy/keys/refs/heads/main/TaxiBossKeys';
@@ -288,8 +294,6 @@
       if (key) {
         document.getElementById('key').textContent = key;
         document.getElementById('result').style.display = 'block';
-        document.getElementById('result').style.transform = 'translateY(0)';
-        document.getElementById('footer').style.transform = 'translateY(0)';
         return;
       }
 
@@ -303,28 +307,28 @@
       saveKey(key);
       document.getElementById('key').textContent = key;
       document.getElementById('result').style.display = 'block';
-      document.getElementById('result').style.transform = 'translateY(0)';
-      document.getElementById('footer').style.transform = 'translateY(0)';
+
+      // Slide in the title, key, and footer
+      document.getElementById('title').style.transform = 'translateY(-50px)';
+      document.getElementById('footer').style.transform = 'translateY(50px)';
+      document.getElementById('footer').style.opacity = 1;
+      document.getElementById('result').style.transform = 'translateY(50px)';
+      document.getElementById('result').style.opacity = 1;
     }
 
-    document.getElementById('getKey').addEventListener('click', function() {
-      // Slide in animations
-      document.getElementById('title').style.transform = 'translateX(0)';
-      document.getElementById('p').style.transform = 'translateX(0)';
-      document.getElementById('getKey').style.transform = 'translateX(0)';
-      assignKey();
-    });
+    document.getElementById('getKey').addEventListener('click', assignKey);
 
     // Close the popup with fade-out animation
     document.getElementById('closePopup').addEventListener('click', function() {
       const popup = document.getElementById('popup');
-      popup.classList.add('fadeOut');
+      popup.style.opacity = 0;
       setTimeout(() => {
         popup.style.display = 'none';
-        popup.classList.remove('fadeOut');
       }, 500);
     });
+
+    // Display the referrer check text
+    document.getElementById('referrerText').textContent = isValidReferrer() ? "Valid referrer detected!" : "No valid referrer detected.";
   </script>
 </body>
 </html>
-
