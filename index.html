@@ -153,7 +153,6 @@
   <h1>Key System TB</h1>
   <p>Click button for key!</p>
   <button id="getKey">Get My Key</button>
-  <button id="shakeButton">SHAKE</button>
   <div id="result" class="key-box" style="display: none;">
     Your Key: <strong id="key"></strong>
   </div>
@@ -224,7 +223,13 @@
 
     async function assignKey() {
       if (!isValidReferrer()) {
-        alert('You must come from lootdest.org to get a key.');
+        const button = document.getElementById('getKey');
+        button.classList.add('shake'); // Trigger the shake animation
+        button.classList.add('crossed'); // Cross out the button with X
+        setTimeout(function() {
+          button.classList.remove('shake'); // Remove the shake effect
+          button.classList.remove('crossed'); // Remove the X line-through
+        }, 500); // After animation is complete, reset it
         return;
       }
 
@@ -255,17 +260,8 @@
     const referrer = document.referrer || 'Direct';
     referrerText.textContent = `Referrer: ${referrer}`;
 
-    // Handle Shake Button
-    document.getElementById('shakeButton').addEventListener('click', function() {
-      const button = document.getElementById('shakeButton');
-      button.classList.add('shake'); // Trigger the shake animation
-      button.classList.add('crossed'); // Cross out the button with X
-      setTimeout(function() {
-        button.classList.remove('shake'); // Remove the shake effect
-        button.classList.remove('crossed'); // Remove the X line-through
-      }, 500); // After animation is complete, reset it
-    });
   </script>
 </body>
 </html>
+
 
