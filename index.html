@@ -142,7 +142,7 @@
       position: fixed;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%) scale(0.9);
       background: #ffffff;
       border-radius: 12px;
       padding: 30px;
@@ -151,16 +151,31 @@
       display: none;
       width: 300px;
       text-align: center;
+      opacity: 0;
+      animation: popupOpen 0.6s ease-out forwards;
+    }
+
+    @keyframes popupOpen {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
     }
 
     #popup h2 {
       font-size: 1.5rem;
       margin-bottom: 20px;
+      color: #111;
     }
 
     #popup p {
       font-size: 1rem;
       margin-bottom: 20px;
+      color: #555;
     }
 
     #popup a {
@@ -276,32 +291,28 @@
       }
 
       let key = getSavedKey();
+      if (!key) {
+        const keys = await fetchKeys();
+        if (keys.length > 0) {
+          key = keys[Math.floor(Math.random() * keys.length)];
+          saveKey(key);
+        } else {
+          alert('No keys available.');
+        }
+      }
+
       if (key) {
         document.getElementById('key').textContent = key;
         document.getElementById('result').style.display = 'block';
-        return;
       }
-
-      const keys = await fetchKeys();
-      if (keys.length === 0) {
-        alert('No keys available.');
-        return;
-      }
-
-      // Randomly select a key
-      key = keys[Math.floor(Math.random() * keys.length)];
-      saveKey(key);
-      document.getElementById('key').textContent = key;
-      document.getElementById('result').style.display = 'block';
     }
 
     document.getElementById('getKey').addEventListener('click', assignKey);
 
-    // Close the popup when the close button is clicked
+    // Close the popup
     document.getElementById('closePopup').addEventListener('click', function() {
       document.getElementById('popup').style.display = 'none';
     });
-
   </script>
 </body>
 </html>
