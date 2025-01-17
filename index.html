@@ -15,8 +15,8 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: #1a1a1a; /* Default dark grey */
-      color: #f1f5f9;
+      background: white; /* White background */
+      color: black; /* Black text */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -30,21 +30,21 @@
       font-size: 2.5rem;
       font-weight: 600;
       margin-bottom: 10px;
-      color: #93c5fd;
+      color: #333; /* Darker text for title */
     }
 
     p {
       font-size: 1rem;
       margin-bottom: 20px;
-      color: #94a3b8;
+      color: #555; /* Slightly lighter text for description */
     }
 
     button {
       padding: 12px 24px;
       font-size: 1rem;
       font-weight: 600;
-      color: #1e293b;
-      background: #4b5563; /* Grey background */
+      color: white; /* White text on button */
+      background: #4b5563; /* Dark grey button */
       border: none;
       border-radius: 8px;
       cursor: pointer;
@@ -53,7 +53,7 @@
     }
 
     button:hover {
-      background: #6b7280; /* Darker grey */
+      background: #6b7280; /* Darker grey when hovered */
       transform: translateY(-2px);
       box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
     }
@@ -61,15 +61,15 @@
     .key-box {
       margin-top: 20px;
       padding: 20px;
-      background: #334155;
-      border: 1px solid #475569;
+      background: #f9fafb; /* Light grey box */
+      border: 1px solid #d1d5db; /* Light border */
       border-radius: 10px;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
       animation: fadeIn 0.5s ease-in-out;
     }
 
     .key-box strong {
-      color: #93c5fd;
+      color: #111; /* Dark text for key */
       font-weight: 600;
     }
 
@@ -87,18 +87,18 @@
     footer {
       margin-top: 40px;
       font-size: 0.9rem;
-      color: #64748b;
+      color: #6b7280; /* Grey footer text */
     }
 
     footer a {
-      color: #93c5fd;
+      color: #1d4ed8; /* Blue link */
       text-decoration: none;
       font-weight: 600;
       transition: color 0.3s ease;
     }
 
     footer a:hover {
-      color: #60a5fa;
+      color: #3b82f6; /* Lighter blue on hover */
     }
   </style>
 </head>
