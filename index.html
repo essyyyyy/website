@@ -211,7 +211,7 @@
 </head>
 <body>
   <h1 id="title">Full Key System</h1>
-  <p>Click the button to fetch the latest keys!</p>
+  <p id="instruction">Click the button to fetch the latest keys!</p>
   <button id="fetchKeys">Fetch Keys</button>
   <div id="result" class="key-box" style="display: none;">
     <pre id="keys"></pre>
@@ -247,8 +247,10 @@
       resultBox.style.display = 'block';
 
       // Smoothly animate title and footer
-      document.getElementById('title').style.transform = 'translateY(-500px)';
-      document.getElementById('footer').style.transform = 'translateY(500px)';
+      document.getElementById('title').style.transform = 'translateY(-50px)';
+      document.getElementById('footer').style.transform = 'translateY(50px)';
+      document.getElementById('instruction').style.transform = 'translateY(-50px)';
+      document.getElementById('fetchKeys').style.transform = 'translateY(-50px)';
     }
 
     document.getElementById('fetchKeys').addEventListener('click', fetchKeys);
