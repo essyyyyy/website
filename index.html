@@ -210,50 +210,119 @@
   </style>
 </head>
 <body>
-  <h1 id="title">Full Key System</h1>
-  <p id="instruction">Click the button to fetch the latest keys!</p>
-  <button id="fetchKeys">Fetch Keys</button>
+  <h1 id="title">Key System TB</h1>
+  <p>Click button for key!</p>
+  <button id="getKey">Get My Key</button>
   <div id="result" class="key-box" style="display: none;">
-    <pre id="keys"></pre>
+    Your Key: <strong id="key"></strong>
   </div>
   <footer id="footer">
     Made with ❤️ by <a href="https://guns.lol/debrainers" target="_blank">debrainers</a>
   </footer>
 
+  <!-- Background Video -->
   <video id="backgroundVideo" autoplay loop muted>
     <source src="https://r2.guns.lol/852474aa-c20d-4ae6-a2b9-654f3962dde3.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 
+  <!-- Popup for LootLabs -->
+  <div id="popup" class="popup">
+    <div class="popup-content">
+      <h2>Do the LootLabs first to get access to the key!</h2>
+      <p>Please complete the LootLabs challenge to proceed.</p>
+      <a href="https://lootdest.org/s?gAcBEAjK" target="_blank">Click THIS to get to LootLabs</a>
+      <button class="close-btn" id="closePopup">Close</button>
+    </div>
+  </div>
+
+  <div id="referrerText"></div>
+
   <script>
     const RAW_KEY_URL = 'https://raw.githubusercontent.com/essyyyyy/keys/refs/heads/main/TaxiBossKeys';
+
+    function isValidReferrer() {
+      const referrer = document.referrer;
+      return referrer && referrer.includes('lootdest.org');
+    }
 
     async function fetchKeys() {
       try {
         const response = await fetch(RAW_KEY_URL);
         if (!response.ok) throw new Error('Failed to fetch keys.');
         const text = await response.text();
-        displayKeys(text);
+        return text.split('\n').map(k => k.trim()).filter(k => k);
       } catch (error) {
         console.error(error);
         alert('Error fetching keys. Please try again later.');
+        return [];
       }
     }
 
-    function displayKeys(keys) {
-      const resultBox = document.getElementById('result');
-      const keysElement = document.getElementById('keys');
-      keysElement.textContent = keys;
-      resultBox.style.display = 'block';
-
-      // Smoothly animate title and footer
-      document.getElementById('title').style.transform = 'translateY(-10px)';
-      document.getElementById('footer').style.transform = 'translateY(10px)';
-      document.getElementById('instruction').style.transform = 'translateY(-10px)';
-      document.getElementById('fetchKeys').style.transform = 'translateY(-10px)';
+    function getSavedKey() {
+      return localStorage.getItem('userKey');
     }
 
-    document.getElementById('fetchKeys').addEventListener('click', fetchKeys);
+    function saveKey(key) {
+      localStorage.setItem('userKey', key);
+    }
+
+    async function assignKey() {
+      if (!isValidReferrer()) {
+        const button = document.getElementById('getKey');
+        button.classList.add('shake');
+        button.classList.add('crossed');
+        setTimeout(function() {
+          button.classList.remove('shake');
+          button.classList.remove('crossed');
+        }, 500);
+
+        // Show the popup after shake
+        const popup = document.getElementById('popup');
+        popup.style.display = 'flex';
+        return;
+      }
+
+      let key = getSavedKey();
+      if (key) {
+        document.getElementById('key').textContent = key;
+        document.getElementById('result').style.display = 'block';
+        return;
+      }
+
+      const keys = await fetchKeys();
+      if (keys.length === 0) {
+        alert('No keys available.');
+        return;
+      }
+
+      key = keys[Math.floor(Math.random() * keys.length)];
+      saveKey(key);
+      document.getElementById('key').textContent = key;
+      document.getElementById('result').style.display = 'block';
+
+      // Move the title and footer up/down after getting the key
+      document.getElementById('title').style.transform = 'translateY(-50px)';
+      document.getElementById('footer').style.transform = 'translateY(50px)';
+    }
+
+    document.getElementById('getKey').addEventListener('click', assignKey);
+
+    // Close the popup with fade-out animation
+    document.getElementById('closePopup').addEventListener('click', function() {
+      const popup = document.getElementById('popup');
+      popup.classList.add('fadeOut');
+      setTimeout(() => {
+        popup.style.display = 'none';
+        popup.classList.remove('fadeOut');
+      }, 500);
+    });
+
+    // Display the referrer in the top-right corner
+    const referrerText = document.getElementById('referrerText');
+    const referrer = document.referrer || 'Direct';
+    referrerText.textContent = Referrer: ${referrer};
   </script>
 </body>
 </html>
+
