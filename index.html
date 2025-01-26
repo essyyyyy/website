@@ -214,7 +214,7 @@
   <p>Click button for key!</p>
   <button id="getKey">Get My Key</button>
   <div id="result" class="key-box" style="display: none;">
-    Your Key: <strong id="key"></strong>
+    Your Key: <pre id="key" style="white-space: pre-wrap;"></pre>
   </div>
   <footer id="footer">
     Made with ❤️ by <a href="https://guns.lol/debrainers" target="_blank">debrainers</a>
@@ -246,33 +246,25 @@
       return referrer && referrer.includes('lootdest.org');
     }
 
-    async function fetchKeys() {
+    async function fetchRawText() {
       try {
         const response = await fetch(RAW_KEY_URL);
-        if (!response.ok) throw new Error('Failed to fetch keys.');
+        if (!response.ok) throw new Error('Failed to fetch raw text.');
         const text = await response.text();
-        return text.split('\n').map(k => k.trim()).filter(k => k);
+        return text;
       } catch (error) {
         console.error(error);
-        alert('Error fetching keys. Please try again later.');
-        return [];
+        alert('Error fetching raw text. Please try again later.');
+        return '';
       }
     }
 
-    function getSavedKey() {
-      return localStorage.getItem('userKey');
-    }
-
-    function saveKey(key) {
-      localStorage.setItem('userKey', key);
-    }
-
-    async function assignKey() {
+    async function displayRawText() {
       if (!isValidReferrer()) {
         const button = document.getElementById('getKey');
         button.classList.add('shake');
         button.classList.add('crossed');
-        setTimeout(function() {
+        setTimeout(() => {
           button.classList.remove('shake');
           button.classList.remove('crossed');
         }, 500);
@@ -283,30 +275,21 @@
         return;
       }
 
-      let key = getSavedKey();
-      if (key) {
-        document.getElementById('key').textContent = key;
-        document.getElementById('result').style.display = 'block';
+      const rawText = await fetchRawText();
+      if (!rawText) {
+        alert('No data available.');
         return;
       }
 
-      const keys = await fetchKeys();
-      if (keys.length === 0) {
-        alert('No keys available.');
-        return;
-      }
-
-      key = keys[Math.floor(Math.random() * keys.length)];
-      saveKey(key);
-      document.getElementById('key').textContent = key;
+      document.getElementById('key').textContent = rawText;
       document.getElementById('result').style.display = 'block';
 
-      // Move the title and footer up/down after getting the key
+      // Move the title and footer up/down after displaying the raw text
       document.getElementById('title').style.transform = 'translateY(-50px)';
       document.getElementById('footer').style.transform = 'translateY(50px)';
     }
 
-    document.getElementById('getKey').addEventListener('click', assignKey);
+    document.getElementById('getKey').addEventListener('click', displayRawText);
 
     // Close the popup with fade-out animation
     document.getElementById('closePopup').addEventListener('click', function() {
@@ -321,8 +304,7 @@
     // Display the referrer in the top-right corner
     const referrerText = document.getElementById('referrerText');
     const referrer = document.referrer || 'Direct';
-    referrerText.textContent = Referrer: ${referrer};
+    referrerText.textContent = `Referrer: ${referrer}`;
   </script>
 </body>
 </html>
-
