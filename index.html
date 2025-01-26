@@ -248,7 +248,7 @@
 
     async function fetchRawText() {
       try {
-        const response = await fetch(RAW_KEY_URL);
+        const response = await fetch(RAW_KEY_URL, { cache: 'no-store' }); // Ensures the latest version is always fetched
         if (!response.ok) throw new Error('Failed to fetch raw text.');
         const text = await response.text();
         return text;
@@ -275,6 +275,7 @@
         return;
       }
 
+      // Fetch and display the raw text every time the button is clicked
       const rawText = await fetchRawText();
       if (!rawText) {
         alert('No data available.');
