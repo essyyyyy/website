@@ -1,5 +1,5 @@
-import * as THREE from 'https://cdn.skypack.dev/three@0.132.2';
-import { PointerLockControls } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/PointerLockControls.js';
+import * as THREE from 'three';
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls';
 
 class EscapeRoom {
     constructor() {
@@ -607,6 +607,16 @@ class EscapeRoom {
 }
 
 // Start the game
-window.addEventListener('load', () => {
-    new EscapeRoom();
+document.addEventListener('DOMContentLoaded', () => {
+    try {
+        const game = new EscapeRoom();
+        console.log('Game initialized successfully');
+    } catch (error) {
+        console.error('Error initializing game:', error);
+        document.getElementById('loading-screen').innerHTML = `
+            <h2>Error Loading Game</h2>
+            <p>Please refresh the page to try again.</p>
+            <p style="color: #ff4444;">Error: ${error.message}</p>
+        `;
+    }
 }); 
