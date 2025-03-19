@@ -32,9 +32,30 @@ class EscapeRoom {
         };
         this.playerCollider = new THREE.Box3();
         this.prevPosition = new THREE.Vector3();
-
+        this.loadingManager = new THREE.LoadingManager();
+        this.setupLoadingManager();
         this.init();
         this.createInstructions();
+    }
+
+    setupLoadingManager() {
+        const progressBar = document.getElementById('progress-bar');
+        
+        this.loadingManager.onProgress = (url, itemsLoaded, itemsTotal) => {
+            const progress = (itemsLoaded / itemsTotal) * 100;
+            progressBar.style.width = progress + '%';
+        };
+
+        this.loadingManager.onLoad = () => {
+            const loadingScreen = document.getElementById('loading-screen');
+            loadingScreen.style.display = 'none';
+            this.animate();
+        };
+
+        this.loadingManager.onError = (url) => {
+            console.error('Error loading:', url);
+            this.showPrompt('Error loading some assets. The game may not work correctly.');
+        };
     }
 
     createInstructions() {
@@ -81,20 +102,6 @@ class EscapeRoom {
         document.addEventListener('keyup', (e) => this.onKeyUp(e));
         window.addEventListener('resize', () => this.onWindowResize());
 
-        this.createRoom();
-        this.createLighting();
-        this.createFurniture();
-        this.createInteractiveObjects();
-        this.createPuzzleElements();
-
-        this.animate();
-
-        document.getElementById('loading-screen').style.display = 'none';
-
-        // Add keyboard event listeners
-        document.addEventListener('keydown', (e) => this.onKeyDown(e));
-        document.addEventListener('keyup', (e) => this.onKeyUp(e));
-        
         // Create highlight material for interactive objects
         this.highlightMaterial = new THREE.MeshStandardMaterial({
             color: 0x4CAF50,
@@ -104,6 +111,13 @@ class EscapeRoom {
 
         // Store original materials for objects
         this.originalMaterials = new Map();
+
+        // Create scene elements
+        this.createRoom();
+        this.createLighting();
+        this.createFurniture();
+        this.createInteractiveObjects();
+        this.createPuzzleElements();
     }
 
     createRoom() {
@@ -248,7 +262,7 @@ class EscapeRoom {
             new THREE.PlaneGeometry(1.2, 1.2),
             new THREE.MeshStandardMaterial({ 
                 color: 0x8b4513,
-                map: new THREE.TextureLoader().load('https://picsum.photos/256')
+                map: new THREE.TextureLoader(this.loadingManager).load('https://picsum.photos/256/256')
             })
         );
         painting.position.set(x, y, z);
@@ -593,4 +607,6 @@ class EscapeRoom {
 }
 
 // Start the game
-new EscapeRoom(); 
+window.addEventListener('load', () => {
+    new EscapeRoom();
+}); 
