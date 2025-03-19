@@ -4,20 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modern Escape Room</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        #game-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            z-index: 1000;
+        }
+        #loading-progress {
+            width: 200px;
+            height: 20px;
+            background: #333;
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: #4CAF50;
+            transition: width 0.3s;
+        }
+        #interaction-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+    </style>
 </head>
 <body>
     <div id="game-container">
         <div id="loading-screen">
-            <div class="loader"></div>
-            <p>Loading...</p>
+            <h2>Loading Game...</h2>
+            <div id="loading-progress">
+                <div id="progress-bar"></div>
+            </div>
+            <p>Click anywhere to start once loaded</p>
         </div>
-        <div id="hud">
-            <div id="inventory"></div>
-            <div id="interaction-prompt"></div>
-        </div>
+        <div id="interaction-prompt"></div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.skypack.dev/three@0.132.2"></script>
+    <script src="https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/PointerLockControls.js"></script>
     <script src="game.js" type="module"></script>
 </body>
 </html> 
