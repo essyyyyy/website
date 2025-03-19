@@ -17,6 +17,8 @@ class EscapeRoom {
         this.walls = [];
         this.raycaster = new THREE.Raycaster();
         this.inventory = [];
+        this.highlightedObject = null;
+        this.moveSpeed = 5.0; // Adjusted movement speed
         this.puzzleState = {
             computerSolved: false,
             safeLocked: true,
@@ -32,6 +34,38 @@ class EscapeRoom {
         this.prevPosition = new THREE.Vector3();
 
         this.init();
+        this.createInstructions();
+    }
+
+    createInstructions() {
+        const instructions = document.createElement('div');
+        instructions.style.position = 'fixed';
+        instructions.style.left = '20px';
+        instructions.style.top = '20px';
+        instructions.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+        instructions.style.color = 'white';
+        instructions.style.padding = '20px';
+        instructions.style.borderRadius = '10px';
+        instructions.style.fontFamily = 'Arial, sans-serif';
+        instructions.style.zIndex = '1000';
+        instructions.style.maxWidth = '300px';
+        instructions.innerHTML = `
+            <h2 style="margin: 0 0 10px 0; color: #4CAF50;">Escape Room Instructions</h2>
+            <ul style="margin: 0; padding-left: 20px; line-height: 1.5;">
+                <li>WASD or Arrow Keys to move</li>
+                <li>Mouse to look around</li>
+                <li>E to interact with highlighted objects</li>
+                <li>ESC to pause/unlock mouse</li>
+            </ul>
+            <h3 style="margin: 10px 0; color: #4CAF50;">Objectives:</h3>
+            <ul style="margin: 0; padding-left: 20px; line-height: 1.5;">
+                <li>Find three colored keys</li>
+                <li>Solve the computer puzzle</li>
+                <li>Hack the terminal</li>
+                <li>Escape the room</li>
+            </ul>
+        `;
+        document.body.appendChild(instructions);
     }
 
     init() {
@@ -56,6 +90,20 @@ class EscapeRoom {
         this.animate();
 
         document.getElementById('loading-screen').style.display = 'none';
+
+        // Add keyboard event listeners
+        document.addEventListener('keydown', (e) => this.onKeyDown(e));
+        document.addEventListener('keyup', (e) => this.onKeyUp(e));
+        
+        // Create highlight material for interactive objects
+        this.highlightMaterial = new THREE.MeshStandardMaterial({
+            color: 0x4CAF50,
+            emissive: 0x4CAF50,
+            emissiveIntensity: 0.5
+        });
+
+        // Store original materials for objects
+        this.originalMaterials = new Map();
     }
 
     createRoom() {
@@ -417,32 +465,66 @@ class EscapeRoom {
         return false;
     }
 
+    checkInteractiveObjects() {
+        this.raycaster.setFromCamera(new THREE.Vector2(), this.camera);
+        const intersects = this.raycaster.intersectObjects(this.objects);
+
+        // Reset previously highlighted object
+        if (this.highlightedObject && this.originalMaterials.has(this.highlightedObject)) {
+            this.highlightedObject.material = this.originalMaterials.get(this.highlightedObject);
+        }
+        this.highlightedObject = null;
+
+        // Highlight new object
+        if (intersects.length > 0) {
+            const object = intersects[0].object;
+            if (!this.originalMaterials.has(object)) {
+                this.originalMaterials.set(object, object.material.clone());
+            }
+            object.material = this.highlightMaterial;
+            this.highlightedObject = object;
+            document.body.style.cursor = 'pointer';
+        } else {
+            document.body.style.cursor = 'default';
+        }
+    }
+
     updateMovement() {
         if (this.controls.isLocked) {
-            const delta = 0.1;
+            const delta = 0.016; // Fixed time step
+            
+            // Damping
             this.velocity.x -= this.velocity.x * 10.0 * delta;
             this.velocity.z -= this.velocity.z * 10.0 * delta;
 
+            // Set movement direction
             this.direction.z = Number(this.moveForward) - Number(this.moveBackward);
             this.direction.x = Number(this.moveRight) - Number(this.moveLeft);
             this.direction.normalize();
 
+            // Apply movement
             if (this.moveForward || this.moveBackward) {
-                this.velocity.z -= this.direction.z * 400.0 * delta;
+                this.velocity.z -= this.direction.z * this.moveSpeed * delta;
             }
             if (this.moveLeft || this.moveRight) {
-                this.velocity.x -= this.direction.x * 400.0 * delta;
+                this.velocity.x -= this.direction.x * this.moveSpeed * delta;
             }
 
+            // Store old position for collision detection
             const oldPosition = this.camera.position.clone();
             
+            // Apply movement
             this.controls.moveRight(-this.velocity.x * delta);
             this.controls.moveForward(-this.velocity.z * delta);
 
+            // Check collisions and revert if needed
             if (this.checkCollisions()) {
                 this.camera.position.copy(oldPosition);
             }
         }
+
+        // Check for interactive objects
+        this.checkInteractiveObjects();
     }
 
     showPrompt(message) {
@@ -462,6 +544,51 @@ class EscapeRoom {
         requestAnimationFrame(() => this.animate());
         this.updateMovement();
         this.renderer.render(this.scene, this.camera);
+    }
+
+    onKeyDown(event) {
+        switch (event.code) {
+            case 'ArrowUp':
+            case 'KeyW':
+                this.moveForward = true;
+                break;
+            case 'ArrowDown':
+            case 'KeyS':
+                this.moveBackward = true;
+                break;
+            case 'ArrowLeft':
+            case 'KeyA':
+                this.moveLeft = true;
+                break;
+            case 'ArrowRight':
+            case 'KeyD':
+                this.moveRight = true;
+                break;
+            case 'KeyE':
+                this.interact();
+                break;
+        }
+    }
+
+    onKeyUp(event) {
+        switch (event.code) {
+            case 'ArrowUp':
+            case 'KeyW':
+                this.moveForward = false;
+                break;
+            case 'ArrowDown':
+            case 'KeyS':
+                this.moveBackward = false;
+                break;
+            case 'ArrowLeft':
+            case 'KeyA':
+                this.moveLeft = false;
+                break;
+            case 'ArrowRight':
+            case 'KeyD':
+                this.moveRight = false;
+                break;
+        }
     }
 }
 
